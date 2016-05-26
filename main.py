@@ -87,7 +87,7 @@ def logDetails():
 @crossdomain(origin='*')
 def logRoom():
     if request.method == 'POST':
-        thisRoom = room(session = request.form['session'], number = request.form['number'], order = request.form['order'], goto = request.form['goto'])
+        thisRoom = room(session = request.form['session'], number = request.form['number'], order = request.form['order'], goto = request.form['gotoNum'])
         thisRoom.put();
         return 'posted'
     else:
