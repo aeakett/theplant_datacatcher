@@ -83,6 +83,26 @@ def logDetails():
     else:
         return 'This method only accepts POSTs.'
 
+@app.route('/logRoom', methods=['POST', 'GET'])
+@crossdomain(origin='*')
+def logRoom():
+    if request.method == 'POST':
+        thisRoom = room(session = request.form['session'], number = request.form['number'], order = request.form['order'], goto = request.form['goto'])
+        thisRoom.put();
+        return 'posted'
+    else:
+        return 'This method only accepts POSTs.'
+
+@app.route('/logGoto', methods=['POST', 'GET'])
+@crossdomain(origin='*')
+def logGoto():
+    if request.method == 'POST':
+        thisGoto = goto(session = request.form['session'], number = request.form['number'], detail = request.form['detail'], answer1 = request.form['answer1'], answer2 = request.form['answer2'])
+        thisGoto.put();
+        return 'posted'
+    else:
+        return 'This method only accepts POSTs.'
+
 @app.errorhandler(404)
 def page_not_found(e):
     """Return a custom 404 error."""
