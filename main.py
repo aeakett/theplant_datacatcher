@@ -96,7 +96,7 @@ def logDetails():
 def logNotes():
     if request.method == 'POST':
         thisNotes = notes(session = request.form['session'], json = request.form['json'], timestamp = time.strftime("%y-%m-%d-%H%M:%S"))
-        thisGoto.put();
+        thisNotes.put();
         return 'posted'
     else:
         return 'This method only accepts POSTs'
