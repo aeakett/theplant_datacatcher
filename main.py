@@ -72,6 +72,10 @@ class goto(ndb.Model):
     answer2 = ndb.StringProperty()
     timestamp = ndb.StringProperty()
 
+class notes(ndb.Model):
+    session = ndb.StringProperty()
+    json = ndb.StringProperty()
+    timestamp = ndb.StringProperty()
 
 @app.route('/')
 def hello():
@@ -83,6 +87,16 @@ def logDetails():
     if request.method == 'POST':
         thisDetail = detail(session = request.form['session'], text = request.form['text'], stackNum = request.form['stackNum'], timestamp = time.strftime("%y-%m-%d-%H%M:%S"))
         thisDetail.put();
+        return 'posted'
+    else:
+        return 'This method only accepts POSTs'
+
+@app.route('/logNotes', methods=['POST', 'GET'])
+@crossdomain(origin='*')
+def logNotes():
+    if request.method == 'POST':
+        thisNotes = notes(session = request.form['session'], json = request.form['json'], timestamp = time.strftime("%y-%m-%d-%H%M:%S"))
+        thisGoto.put();
         return 'posted'
     else:
         return 'This method only accepts POSTs'
