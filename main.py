@@ -5,6 +5,7 @@ from flask import Flask, request, make_response, current_app
 from datetime import timedelta
 from functools import update_wrapper
 from google.appengine.ext import ndb
+import time
 app = Flask(__name__)
 # Note: We don't need to call run() since our application is embedded within
 # the App Engine WSGI application server.
@@ -54,12 +55,14 @@ class detail(ndb.Model):
     session = ndb.StringProperty()
     text = ndb.StringProperty()
     stackNum = ndb.StringProperty()
+    timestamp = ndb.StringProperty()
 
 class room(ndb.Model):
     session = ndb.StringProperty()
     number = ndb.StringProperty()
     order = ndb.StringProperty()
     goto = ndb.StringProperty()
+    timestamp = ndb.StringProperty()
 
 class goto(ndb.Model):
     session = ndb.StringProperty()
@@ -67,6 +70,7 @@ class goto(ndb.Model):
     detail = ndb.StringProperty()
     answer1 = ndb.StringProperty()
     answer2 = ndb.StringProperty()
+    timestamp = ndb.StringProperty()
 
 
 @app.route('/')
@@ -77,31 +81,31 @@ def hello():
 @crossdomain(origin='*')
 def logDetails():
     if request.method == 'POST':
-        thisDetail = detail(session = request.form['session'], text = request.form['text'], stackNum = request.form['stackNum'])
+        thisDetail = detail(session = request.form['session'], text = request.form['text'], stackNum = request.form['stackNum'], timestamp = time.strftime("%y-%m-%d-%H%M:%S"))
         thisDetail.put();
         return 'posted'
     else:
-        return 'This method only accepts POSTs.'
-
-@app.route('/logRoom', methods=['POST', 'GET'])
-@crossdomain(origin='*')
-def logRoom():
-    if request.method == 'POST':
-        thisRoom = room(session = request.form['session'], number = request.form['number'], order = request.form['order'], goto = request.form['gotoNum'])
-        thisRoom.put();
-        return 'posted'
-    else:
-        return 'This method only accepts POSTs.'
+        return 'This method only accepts POSTs'
 
 @app.route('/logGoto', methods=['POST', 'GET'])
 @crossdomain(origin='*')
 def logGoto():
     if request.method == 'POST':
-        thisGoto = goto(session = request.form['session'], number = request.form['number'], detail = request.form['detail'], answer1 = request.form['answer1'], answer2 = request.form['answer2'])
+        thisGoto = goto(session = request.form['session'], number = request.form['number'], detail = request.form['detail'], answer1 = request.form['answer1'], answer2 = request.form['answer2'], timestamp = time.strftime("%y-%m-%d-%H%M:%S"))
         thisGoto.put();
         return 'posted'
     else:
-        return 'This method only accepts POSTs.'
+        return 'This method only accepts POSTs'
+
+@app.route('/logRoom', methods=['POST', 'GET'])
+@crossdomain(origin='*')
+def logRoom():
+    if request.method == 'POST':
+        thisRoom = room(session = request.form['session'], number = request.form['number'], order = request.form['order'], goto = request.form['gotoNum'], timestamp = time.strftime("%y-%m-%d-%H%M:%S"))
+        thisRoom.put();
+        return 'posted'
+    else:
+        return 'This method only accepts POSTs'
 
 @app.errorhandler(404)
 def page_not_found(e):
